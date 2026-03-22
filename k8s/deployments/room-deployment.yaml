@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: room-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: room-service
+  template:
+    metadata:
+      labels:
+        app: room-service
+    spec:
+      containers:
+        - name: room-service
+          image: room-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3002
