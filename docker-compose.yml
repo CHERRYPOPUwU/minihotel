@@ -1,1 +1,35 @@
-docker-compose up
+version: "3.8"
+
+services:
+
+  user-service:
+    build:
+      context: .
+      dockerfile: docker/user-service.Dockerfile
+    ports:
+      - "3001:3001"
+
+  room-service:
+    build:
+      context: .
+      dockerfile: docker/room-service.Dockerfile
+    ports:
+      - "3002:3002"
+
+  booking-service:
+    build:
+      context: .
+      dockerfile: docker/booking-service.Dockerfile
+    ports:
+      - "3003:3003"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: docker/api-gateway.Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - room-service
+      - booking-service

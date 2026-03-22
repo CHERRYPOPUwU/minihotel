@@ -1,0 +1,12 @@
+{
+  "name": "room-service",
+  "version": "1.0.0",
+  "description": "Microservicio de habitaciones",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
