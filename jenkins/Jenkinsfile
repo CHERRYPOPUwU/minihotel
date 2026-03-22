@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clonar repositorio') {
+            steps {
+                echo 'Clonando repositorio...'
+                git 'https://github.com/CHERRYPOPUwU/minihotel.git'
+            }
+        }
+
+        stage('Build Docker') {
+            steps {
+                echo 'Construyendo imágenes Docker...'
+                sh 'docker build -f docker/user-service.Dockerfile -t user-service .'
+                sh 'docker build -f docker/room-service.Dockerfile -t room-service .'
+                sh 'docker build -f docker/booking-service.Dockerfile -t booking-service .'
+                sh 'docker build -f docker/api-gateway.Dockerfile -t api-gateway .'
+            }
+        }
+
+        stage('Deploy Kubernetes') {
+            steps {
+                echo 'Desplegando en Kubernetes...'
+                sh 'kubectl apply -f k8s/'
+            }
+        }
+    }
+}
