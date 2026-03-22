@@ -6,7 +6,7 @@ pipeline {
         stage('Clonar repositorio') {
             steps {
                 echo 'Clonando repositorio...'
-                git 'https://github.com/CHERRYPOPUwU/minihotel.git'
+                git branch: 'main', url: 'https://github.com/CHERRYPOPUwU/minihotel.git'
             }
         }
 
