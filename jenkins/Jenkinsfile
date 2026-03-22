@@ -1,8 +1,15 @@
 pipeline {
     agent any
 
-    stages {
+    environment {
+        DOCKER_IMAGE_USER = "user-service"
+        DOCKER_IMAGE_ROOM = "room-service"
+        DOCKER_IMAGE_BOOKING = "booking-service"
+        DOCKER_IMAGE_API = "api-gateway"
+        K8S_NAMESPACE = "default"
+    }
 
+    stages {
         stage('Clonar repositorio') {
             steps {
                 echo 'Clonando repositorio...'
@@ -10,21 +17,37 @@ pipeline {
             }
         }
 
-        stage('Build Docker') {
+        stage('Construir imágenes Docker') {
             steps {
                 echo 'Construyendo imágenes Docker...'
-                sh 'docker build -f docker/user-service.Dockerfile -t user-service .'
-                sh 'docker build -f docker/room-service.Dockerfile -t room-service .'
-                sh 'docker build -f docker/booking-service.Dockerfile -t booking-service .'
-                sh 'docker build -f docker/api-gateway.Dockerfile -t api-gateway .'
+                sh 'docker build -f docker/user-service.Dockerfile -t $DOCKER_IMAGE_USER .'
+                sh 'docker build -f docker/room-service.Dockerfile -t $DOCKER_IMAGE_ROOM .'
+                sh 'docker build -f docker/booking-service.Dockerfile -t $DOCKER_IMAGE_BOOKING .'
+                sh 'docker build -f docker/api-gateway.Dockerfile -t $DOCKER_IMAGE_API .'
             }
         }
 
-        stage('Deploy Kubernetes') {
+        stage('Push imágenes (opcional)') {
             steps {
-                echo 'Desplegando en Kubernetes...'
-                sh 'kubectl apply -f k8s/'
+                echo 'Subiendo imágenes a Docker Hub (si quieres)...'
+                // sh 'docker push $DOCKER_IMAGE_USER'
+                // sh 'docker push $DOCKER_IMAGE_ROOM'
+                // sh 'docker push $DOCKER_IMAGE_BOOKING'
+                // sh 'docker push $DOCKER_IMAGE_API'
             }
+        }
+
+        stage('Desplegar en Kubernetes') {
+            steps {
+                echo 'Aplicando manifiestos de Kubernetes...'
+                sh 'kubectl apply -R -f k8s/'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finalizado.'
         }
     }
 }
