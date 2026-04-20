@@ -88,7 +88,14 @@ async function loadUsers() {
   try {
     const users = await apiFetch('/api/users');
     $('userCount').textContent = users.length;
-    container.innerHTML = JSON.stringify(users, null, 2);
+
+    container.innerHTML = users.map(user => `
+      <div class="card">
+        <p><strong>ID:</strong> ${user.id}</p>
+        <p><strong>Nombre:</strong> ${user.name}</p>
+      </div>
+    `).join('');
+
   } catch {
     container.innerHTML = 'Error cargando usuarios';
   }
@@ -120,7 +127,14 @@ async function loadRooms() {
   try {
     const rooms = await apiFetch('/api/rooms');
     $('roomCount').textContent = rooms.length;
-    container.innerHTML = JSON.stringify(rooms, null, 2);
+
+    container.innerHTML = rooms.map(room => `
+      <div class="card">
+        <p><strong>ID:</strong> ${room.id}</p>
+        <p><strong>Habitación:</strong> ${room.number}</p>
+        <p><strong>Precio:</strong> $${room.price}</p>
+      </div>
+    `).join('');
   } catch {
     container.innerHTML = 'Error cargando habitaciones';
   }
@@ -158,7 +172,15 @@ async function loadBookings() {
   try {
     const bookings = await apiFetch('/api/bookings');
     $('bookingCount').textContent = bookings.length;
-    container.innerHTML = JSON.stringify(bookings, null, 2);
+
+    container.innerHTML = bookings.map(b => `
+      <div class="card">
+        <p><strong>ID:</strong> ${b.id}</p>
+        <p><strong>Usuario:</strong> ${b.userId}</p>
+        <p><strong>Habitación:</strong> ${b.roomId}</p>
+        <p><strong>Fecha:</strong> ${b.date}</p>
+      </div>
+    `).join('');
   } catch {
     container.innerHTML = 'Error cargando reservas';
   }
