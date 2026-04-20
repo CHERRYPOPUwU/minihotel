@@ -7,11 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Clonar repo') {
-            steps {
-                git 'https://github.com/CHERRYPOPUwU/minihotel.git'
-            }
-        }
 
         stage('Build imágenes') {
             steps {
