@@ -314,3 +314,4 @@
     .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
     .status-dot.online { background: #7ecf8e; box-shadow: 0 0 6px #7ecf8e88; }
     .status-dot.offline { background: #e07e7e; box-shadow: 0 0 6px #e07e7e88; }
+    

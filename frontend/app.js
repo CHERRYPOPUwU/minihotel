@@ -131,8 +131,8 @@ async function loadRooms() {
     container.innerHTML = rooms.map(room => `
       <div class="card">
         <p><strong>ID:</strong> ${room.id}</p>
-        <p><strong>Habitación:</strong> ${room.number}</p>
-        <p><strong>Precio:</strong> $${room.price}</p>
+        <p><strong>Habitación:</strong> ${room.roomNumber}</p>
+        <p><strong>Precio:</strong> $${room.roomPrice}</p>
       </div>
     `).join('');
   } catch {
