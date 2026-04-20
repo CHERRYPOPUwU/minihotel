@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway
+  name: frontend
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: api-gateway
+      app: frontend
   template:
     metadata:
       labels:
-        app: api-gateway
+        app: frontend
     spec:
       containers:
-        - name: api-gateway
-          image: cherrypopuwu/api-gateway:latest
+        - name: frontend
+          image: cherrypopuwu/frontend:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 80

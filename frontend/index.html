@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotel Élite — Reservas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js"></script>
+</head>
+  <body>
+
+  <!-- ── HERO ── -->
+  <div id="heroSection" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Sistema de gestión</div>
+      <h1 class="hero-title">Hotel<br/><em>Élite</em></h1>
+      <p class="hero-sub">Plataforma de reservas &amp; administración</p>
+      <button class="hero-cta" onclick="showApp()">
+        ✦ &nbsp;Acceder al sistema
+      </button>
+    </div>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+      Scroll
+    </div>
+  </div>
+
+  <!-- ── TOAST CONTAINER ── -->
+  <div class="toast-container" id="toasts"></div>
+
+  <!-- ── APP ── -->
+  <div class="app" id="app">
+
+    <!-- Nav -->
+    <nav>
+      <div class="nav-brand">Hotel <span>Élite</span></div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('users')">Huéspedes</button>
+        <button class="nav-tab" onclick="switchTab('rooms')">Habitaciones</button>
+        <button class="nav-tab" onclick="switchTab('bookings')">Reservas</button>
+      </div>
+    </nav>
+
+    <!-- Config bar -->
+    <div class="config-bar">
+      <span class="config-label">API Gateway</span>
+      <input class="config-url" id="apiBase" value="" placeholder="http://52.226.248.84" onchange="checkStatus()" />
+      <div class="config-status">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">—</span>
+      </div>
+      <button class="btn-ghost" style="padding:.3rem .9rem;font-size:.62rem;" onclick="refreshAll()">↺ Actualizar</button>
+    </div>
+
+    <!-- ══ USERS TAB ══ -->
+    <div id="tab-users">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Gestión</div>
+          <div class="section-title">Huéspedes</div>
+        </div>
+      </div>
+
+      <div class="form-panel">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Nombre completo</label>
+            <input class="form-input" id="userName" placeholder="Ej. María García" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="createUser()">+ Registrar huésped</button>
+          <button class="btn-ghost" onclick="loadUsers()">Ver todos</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-toolbar">
+          <div class="table-count"><span id="userCount">0</span> huéspedes registrados</div>
+        </div>
+        <div id="usersTable"><div class="empty-state">Cargando huéspedes…</div></div>
+      </div>
+    </div>
+
+    <!-- ══ ROOMS TAB ══ -->
+    <div id="tab-rooms" style="display:none">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Inventario</div>
+          <div class="section-title">Habitaciones</div>
+        </div>
+      </div>
+
+      <div class="form-panel">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Número de habitación</label>
+            <input class="form-input" id="roomNumber" placeholder="Ej. 301" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Precio por noche (USD)</label>
+            <input class="form-input" id="roomPrice" type="number" placeholder="Ej. 250" min="0" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="createRoom()">+ Agregar habitación</button>
+          <button class="btn-ghost" onclick="loadRooms()">Ver todas</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-toolbar">
+          <div class="table-count"><span id="roomCount">0</span> habitaciones en inventario</div>
+        </div>
+        <div id="roomsTable"><div class="empty-state">Cargando habitaciones…</div></div>
+      </div>
+    </div>
+
+    <!-- ══ BOOKINGS TAB ══ -->
+    <div id="tab-bookings" style="display:none">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Operaciones</div>
+          <div class="section-title">Reservas</div>
+        </div>
+      </div>
+
+      <div class="form-panel">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">ID de Huésped</label>
+            <input class="form-input" id="bookingUserId" placeholder="Ej. 1" type="number" min="1" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ID de Habitación</label>
+            <input class="form-input" id="bookingRoomId" placeholder="Ej. 2" type="number" min="1" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha de ingreso</label>
+            <input class="form-input" id="bookingDate" type="date" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="createBooking()">+ Crear reserva</button>
+          <button class="btn-ghost" onclick="loadBookings()">Ver todas</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-toolbar">
+          <div class="table-count"><span id="bookingCount">0</span> reservas activas</div>
+        </div>
+        <div id="bookingsTable"><div class="empty-state">Cargando reservas…</div></div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
