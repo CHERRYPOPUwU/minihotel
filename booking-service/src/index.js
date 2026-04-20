@@ -14,11 +14,36 @@ app.post("/bookings", (req, res) => {
         date: req.body.date
     };
     bookings.push(booking);
-    res.json(booking);
+    res.status(201).json(booking);
 });
 
 app.get("/bookings", (req, res) => {
     res.json(bookings);
+});
+
+app.get("/bookings/:id", (req, res) => {
+    const booking = bookings.find(b => b.id === Number(req.params.id));
+    if (!booking) return res.status(404).json({ error: "Reserva no encontrada" });
+    res.json(booking);
+});
+
+app.put("/bookings/:id", (req, res) => {
+    const idx = bookings.findIndex(b => b.id === Number(req.params.id));
+    if (idx === -1) return res.status(404).json({ error: "Reserva no encontrada" });
+    bookings[idx] = {
+        ...bookings[idx],
+        userId: req.body.userId,
+        roomId: req.body.roomId,
+        date: req.body.date
+    };
+    res.json(bookings[idx]);
+});
+
+app.delete("/bookings/:id", (req, res) => {
+    const idx = bookings.findIndex(b => b.id === Number(req.params.id));
+    if (idx === -1) return res.status(404).json({ error: "Reserva no encontrada" });
+    bookings.splice(idx, 1);
+    res.status(204).send();
 });
 
 app.listen(3003, () => {
