@@ -2,52 +2,59 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_USER = "user-service"
-        DOCKER_IMAGE_ROOM = "room-service"
-        DOCKER_IMAGE_BOOKING = "booking-service"
-        DOCKER_IMAGE_API = "api-gateway"
-        K8S_NAMESPACE = "default"
+        DOCKER_USER = "cherrypopuwu"
     }
 
     stages {
-        stage('Clonar repositorio') {
+
+        stage('Clonar repo') {
             steps {
-                echo 'Clonando repositorio...'
-                git branch: 'main', url: 'https://github.com/CHERRYPOPUwU/minihotel.git'
+                git 'https://github.com/CHERRYPOPUwU/minihotel.git'
             }
         }
 
-        stage('Construir imágenes Docker') {
+        stage('Build imágenes') {
             steps {
-                echo 'Construyendo imágenes Docker...'
-                sh 'docker build -f docker/user-service.Dockerfile -t $DOCKER_IMAGE_USER .'
-                sh 'docker build -f docker/room-service.Dockerfile -t $DOCKER_IMAGE_ROOM .'
-                sh 'docker build -f docker/booking-service.Dockerfile -t $DOCKER_IMAGE_BOOKING .'
-                sh 'docker build -f docker/api-gateway.Dockerfile -t $DOCKER_IMAGE_API .'
+                sh '''
+                docker build -t $DOCKER_USER/api-gateway:latest -f docker/api-gateway.Dockerfile .
+                docker build -t $DOCKER_USER/frontend:latest -f docker/frontend.Dockerfile .
+                docker build -t $DOCKER_USER/user-service:latest -f docker/user-service.Dockerfile .
+                docker build -t $DOCKER_USER/room-service:latest -f docker/room-service.Dockerfile .
+                docker build -t $DOCKER_USER/booking-service:latest -f docker/booking-service.Dockerfile .
+                '''
             }
         }
 
-        stage('Push imágenes (opcional)') {
+        stage('Login DockerHub') {
             steps {
-                echo 'Subiendo imágenes a Docker Hub (si quieres)...'
-                // sh 'docker push $DOCKER_IMAGE_USER'
-                // sh 'docker push $DOCKER_IMAGE_ROOM'
-                // sh 'docker push $DOCKER_IMAGE_BOOKING'
-                // sh 'docker push $DOCKER_IMAGE_API'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                }
             }
         }
 
-        stage('Desplegar en Kubernetes') {
+        stage('Push imágenes') {
             steps {
-                echo 'Aplicando manifiestos de Kubernetes...'
-                sh 'kubectl apply -R -f k8s/'
+                sh '''
+                docker push $DOCKER_USER/api-gateway:latest
+                docker push $DOCKER_USER/frontend:latest
+                docker push $DOCKER_USER/user-service:latest
+                docker push $DOCKER_USER/room-service:latest
+                docker push $DOCKER_USER/booking-service:latest
+                '''
             }
         }
-    }
 
-    post {
-        always {
-            echo 'Pipeline finalizado.'
+        stage('Deploy Kubernetes') {
+            steps {
+                sh '''
+                kubectl rollout restart deployment api-gateway
+                kubectl rollout restart deployment frontend
+                kubectl rollout restart deployment user-service
+                kubectl rollout restart deployment room-service
+                kubectl rollout restart deployment booking-service
+                '''
+            }
         }
     }
 }
