@@ -31,9 +31,14 @@ app.put("/users/:id", (req, res) => {
 
 app.delete("/users/:id", (req, res) => {
     const idx = users.findIndex(u => u.id === Number(req.params.id));
-    if (idx === -1) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    if (idx === -1) {
+        return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
     users.splice(idx, 1);
-    res.status(204).send();
+
+    res.status(200).json({ message: "Usuario eliminado correctamente" });
 });
 
 app.listen(3001, () => {

@@ -17,12 +17,21 @@ function toast(msg, type = 'default') {
 }
 
 async function apiFetch(path, opts = {}) {
-  const res = await fetch(path, {
-    headers: { 'Content-Type': 'application/json' },
-    ...opts
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
+  try {
+    const res = await fetch(path, {
+      headers: { 'Content-Type': 'application/json' },
+      ...opts
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+
+  } catch (e) {
+    toast('Error de conexión: ' + e.message, 'error');
+    throw e;
+  }
 }
 
 /* ── INIT / HERO ── */

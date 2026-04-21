@@ -41,9 +41,14 @@ app.put("/bookings/:id", (req, res) => {
 
 app.delete("/bookings/:id", (req, res) => {
     const idx = bookings.findIndex(b => b.id === Number(req.params.id));
-    if (idx === -1) return res.status(404).json({ error: "Reserva no encontrada" });
+
+    if (idx === -1) {
+        return res.status(404).json({ error: "Reserva no encontrada" });
+    }
+
     bookings.splice(idx, 1);
-    res.status(204).send();
+
+    res.status(200).json({ message: "Reserva eliminada correctamente" });
 });
 
 app.listen(3003, () => {
