@@ -39,11 +39,17 @@ app.put("/users/:id", async (req, res) => {
     } catch (e) { res.status(e.response?.status || 500).json(e.response?.data || { error: "Error en user-service" }); }
 });
 
+// DELETE USER
 app.delete("/users/:id", async (req, res) => {
-    try {
-        await api.delete(`http://user-service:3001/users/${req.params.id}`);
-        res.status(204).send();
-    } catch (e) { res.status(e.response?.status || 500).json(e.response?.data || { error: "Error en user-service" }); }
+  try {
+    const response = await axios.delete(
+      `http://user-service:3001/users/${req.params.id}`
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Error eliminando usuario" });
+  }
 });
 
 /* ── ROOMS ── */
