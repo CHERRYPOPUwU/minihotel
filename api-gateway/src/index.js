@@ -82,10 +82,15 @@ app.put("/rooms/:id", async (req, res) => {
 });
 
 app.delete("/rooms/:id", async (req, res) => {
-    try {
-        await api.delete(`http://room-service:3002/rooms/${req.params.id}`);
-        res.status(204).send();
-    } catch (e) { res.status(e.response?.status || 500).json(e.response?.data || { error: "Error en room-service" }); }
+  try {
+    const response = await axios.delete(
+      `http://room-service:3002/rooms/${req.params.id}`
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Error eliminando habitación" });
+  }
 });
 
 /* ── BOOKINGS ── */
@@ -118,10 +123,15 @@ app.put("/bookings/:id", async (req, res) => {
 });
 
 app.delete("/bookings/:id", async (req, res) => {
-    try {
-        await api.delete(`http://booking-service:3003/bookings/${req.params.id}`);
-        res.status(204).send();
-    } catch (e) { res.status(e.response?.status || 500).json(e.response?.data || { error: "Error en booking-service" }); }
+  try {
+    const response = await axios.delete(
+      `http://booking-service:3003/bookings/${req.params.id}`
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Error eliminando reserva" });
+  }
 });
 
 app.listen(3000, () => console.log("API Gateway running on port 3000"));
