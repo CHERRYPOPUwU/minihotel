@@ -30,15 +30,15 @@ app.put("/rooms/:id", (req, res) => {
 });
 
 app.delete("/rooms/:id", (req, res) => {
-  const idx = rooms.findIndex(r => r.id === Number(req.params.id));
+    const idx = rooms.findIndex(r => r.id === Number(req.params.id));
 
-  if (idx === -1) {
-    return res.status(404).json({ error: "Habitación no encontrada" });
-  }
+    if (idx === -1) {
+        return res.status(404).json({ error: "Habitación no encontrada" });
+    }
 
-  rooms.splice(idx, 1);
+    rooms.splice(idx, 1);
 
-  res.status(200).json({ message: "Habitación eliminada correctamente" });
+    res.status(200).json({ message: "Habitación eliminada correctamente" });
 });
 
 app.listen(3002, () => {
